@@ -11,23 +11,21 @@ class SphericalData(object):
         self.Tthetas = []
         self.Tphis = []
 
+class SummaryData(object):
+    def __init__(self, intFailureType, maxdFr, maxdTr, avgdFr, avgdTr, avgFtheta, avgTtheta, avgFphi, avgTphi):
+        self.intFailureType = intFailureType
+        self.maxdFr = maxdFr
+        self.maxdTr = maxdTr
+        self.avgdFr = avgdFr
+        self.avgdTr = avgdTr
+        self.avgFtheta = avgFtheta
+        self.avgTtheta = avgTtheta
+        self.avgFphi = avgFphi
+        self.avgTphi = avgTphi
+
+
 data = dataImport.getDataInstances("lp4.data")
 
-#print "*****\nDATA\n*****"
-#for datum in data:
-#    print "\nFailure type %d" % datum.intFailureType
-#    print "Force x-component:"
-#    print datum.FxVector
-#    print "Force y-component:"
-#    print datum.FyVector
-#    print "Force z-component:"
-#    print datum.FzVector
-#    print "Torque x-component:"
-#    print datum.TxVector
-#    print "Torque y-component:"
-#    print datum.TyVector
-#    print "Torque z-component:"
-#    print datum.TzVector
 data2 = []
 for datum in data:
     data2l = SphericalData(datum.intFailureType)
@@ -51,26 +49,29 @@ for datum in data:
 
         data2l.Fphis.append(np.arccos(datum.FzVector[i]/data2l.Frhos[i]))
         data2l.Tphis.append(np.arccos(datum.TzVector[i]/data2l.Trhos[i]))
-
     data2.append(data2l)
 
-
-
+data3 = []
 for datum in data2:
-    print "\nFailure type %d" % datum.intFailureType
-    print "Force x-component:"
-    print datum.Frhos
-    print "Force y-component:"
-    print datum.Trhos
-    print "Force z-component:"
-    print datum.Fphis
-    print "Torque x-component:"
-    print datum.Tphis
-    print "Torque y-component:"
-    print datum.Fthetas
-    print "Torque z-component:"
-    print datum.Tthetas
+    dF = []
+    dT = []
+    for i in range(0, 14):
+        dF.append(datum.Frhos[i] - datum.Frhos[i+1])
+        dT.append(datum.Trhos[i] - datum.Trhos[i+1])
+    data3.append(SummaryData(datum.intFailureType, max(dF), max(dT), np.mean(dF), np.mean(dT), np.mean(datum.Fthetas), np.mean(datum.Tthetas), np.mean(datum.Fphis), np.mean(datum.Tphis)))
 
 
+print data[0].FxVector
+print data[0].FyVector
+print data[0].FzVector
+print data2[0].Frhos
+print "asdf"
+
+#data3 contains summary data to use
+print data3[0].intFailureType
+print data3[0].maxdFr
+print data3[0].maxdTr
+print data3[0].avgdFr
+print data3[0].avgdTr
 
 
