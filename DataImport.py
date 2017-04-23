@@ -158,7 +158,7 @@ def getDataInstances(strDataset):
 
             ## add to list of all data instances
             dataInstances.\
-                append(DataInstance(intFailureType, fx, fy, fx, tx, ty, tz))
+                append(DataInstance(intFailureType, fx, fy, fz, tx, ty, tz))
 
             # clear old lists
             fx = []
