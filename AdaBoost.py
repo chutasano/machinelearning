@@ -1,5 +1,6 @@
 import DataImport as dataImport
 import numpy as np
+import matplotlib.pyplot as plt 
 
 class SphericalData(object):
     def __init__(self, intFailureType):
@@ -12,12 +13,14 @@ class SphericalData(object):
         self.Tphis = []
 
 class SummaryData(object):
-    def __init__(self, intFailureType, maxdFr, maxdTr, avgdFr, avgdTr, avgFtheta, avgTtheta, avgFphi, avgTphi):
+    def __init__(self, intFailureType, maxdFr, maxdTr, avgdFr, avgdTr, mindFr, mindTr, avgFtheta, avgTtheta, avgFphi, avgTphi):
         self.intFailureType = intFailureType
         self.maxdFr = maxdFr
         self.maxdTr = maxdTr
         self.avgdFr = avgdFr
         self.avgdTr = avgdTr
+        self.mindFr = mindFr
+        self.mindTr = mindTr
         self.avgFtheta = avgFtheta
         self.avgTtheta = avgTtheta
         self.avgFphi = avgFphi
@@ -67,7 +70,7 @@ for datum in data2:
     for i in range(0, 14):
         dF.append(datum.Frhos[i+1] - datum.Frhos[i])
         dT.append(datum.Trhos[i+1] - datum.Trhos[i])
-    data3.append(SummaryData(datum.intFailureType, max(map(abs, dF)), max(map(abs, dT)), np.mean(dF), np.mean(dT), np.mean(datum.Fthetas), np.mean(datum.Tthetas), np.mean(datum.Fphis), np.mean(datum.Tphis)))
+    data3.append(SummaryData(datum.intFailureType, max(dF), max(dT), np.mean(map(np.square, dF)), np.mean(map(np.square,dT)), min(dF), min(dT), np.mean(datum.Fthetas), np.mean(datum.Tthetas), np.mean(datum.Fphis), np.mean(datum.Tphis)))
 
 
 test0 = []
@@ -75,11 +78,11 @@ test1 = []
 test2 = []
 for datum in data3:
     if datum.intFailureType == 0:
-        test0.append(datum.avgdFr)
+        test0.append(datum.avgdTr)
     elif datum.intFailureType == 1:
-        test1.append(datum.avgdFr)
+        test1.append(datum.avgdTr)
     else:
-        test2.append(datum.avgdFr)
+        test2.append(datum.avgdTr)
 
 print "mean"
 print np.mean(test0)
@@ -93,3 +96,9 @@ print "min"
 print min(test0)
 print min(test1)
 print min(test2)
+
+
+plt.xlabel('x')
+plt.ylabel('y')
+plt.scatter(test0+test1+test2, [0]*len(test0)+[1]*len(test1)+[2]*len(test2))
+plt.show()
