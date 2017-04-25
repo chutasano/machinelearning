@@ -52,10 +52,10 @@ def train(x, xc):
                 best = a
                 bestt = xi
                 bestflag = 1
-    print "bestt, best"
-    print bestt
-    print best
-    print bestflag
+#    print "bestt, best"
+#    print bestt
+#    print best
+#    print bestflag
     if bestflag == 0:
         return lambda x: x >= bestt
     else:
