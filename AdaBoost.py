@@ -1,6 +1,7 @@
 import DataImport as dataImport
 import numpy as np
 import matplotlib.pyplot as plt 
+import WeakModeler as wm
 
 class SphericalData(object):
     def __init__(self, intFailureType):
@@ -78,27 +79,52 @@ test1 = []
 test2 = []
 for datum in data3:
     if datum.intFailureType == 0:
-        test0.append(datum.avgdTr)
+        test0.append(datum.maxdFr)
     elif datum.intFailureType == 1:
-        test1.append(datum.avgdTr)
+        test1.append(datum.maxdFr)
     else:
-        test2.append(datum.avgdTr)
+        test2.append(datum.maxdFr)
 
-print "mean"
-print np.mean(test0)
-print np.mean(test1)
-print np.mean(test2)
-print "max"
-print max(test0)
-print max(test1)
-print max(test2)
-print "min"
-print min(test0)
-print min(test1)
-print min(test2)
+#plt.ylabel('y')
+#plt.scatter(test0+test1+test2, [0]*len(test0)+[1]*len(test1)+[2]*len(test2))
+#plt.show()
+
+f = []
+f.append([])
+f.append([])
+f.append([])
+f.append([])
+f.append([])
+f.append([])
+y = []
+
+for datum in data3:
+    y.append(datum.intFailureType)
+    f[0].append(datum.maxdFr)
+    f[1].append(datum.avgdFr)
+    f[2].append(datum.mindFr)
+    f[3].append(datum.maxdTr)
+    f[4].append(datum.avgdTr)
+    f[5].append(datum.mindTr) 
+m = []
+m.append([])
+m.append([])
+m.append([])
+
+for feature in f:
+    for i in range(0,len(m)):
+        m[i].append(wm.WeakModeler(feature,y,i))
 
 
-plt.xlabel('x')
-plt.ylabel('y')
-plt.scatter(test0+test1+test2, [0]*len(test0)+[1]*len(test1)+[2]*len(test2))
-plt.show()
+for i in range(0,len(m)):
+    for j in range(0,len(f)):
+        print "i: %d, j: %d" % (i, j)
+        asd = []
+        for k in range(0, len(y)):
+            if y[k] == i:
+                asd.append(f[j][k])
+        total = sum(map(m[i][j], f[j]))
+        fromknown = sum(map(m[i][j], asd))
+        rate = 1-float(total-fromknown)/float(len(f[j]))
+        print "total: %d/%d, fromknown: %d/%d, successrate: %f" % (total, len(f[j]), fromknown,len(asd), rate)
+
