@@ -111,11 +111,18 @@ m.append([])
 m.append([])
 m.append([])
 
+
+##
+##
+##
 for feature in f:
     for i in range(0,len(m)):
         m[i].append(wm.WeakModeler(feature,y,i))
 
 
+##
+## summarizes weak learners
+##
 for i in range(0,len(m)):
     for j in range(0,len(f)):
         print "i: %d, j: %d" % (i, j)
@@ -127,4 +134,17 @@ for i in range(0,len(m)):
         fromknown = sum(map(m[i][j], asd))
         rate = 1-float(total-fromknown)/float(len(f[j]))
         print "total: %d/%d, fromknown: %d/%d, successrate: %f" % (total, len(f[j]), fromknown,len(asd), rate)
+
+
+
+# ##initiliaze uniform distribution
+# distribution = list((float(1)/len(data3) for i in range(len(data3))))
+#
+#
+# ## adaboost - go through all weak learners
+# for j in range(6):
+#    m[0].append(wm.WeakModeler(distribution, y, 0))
+
+
+
 
